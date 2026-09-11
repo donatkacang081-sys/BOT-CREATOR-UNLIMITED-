@@ -1,15 +1,15 @@
 /*
   BOT CREATOR UNLIMITED PRO X
 
-  HARGA YANG DITAMPILKAN:
-    1 Bulan  = Rp300.000
-    3 Bulan  = Rp500.000
-    1 Tahun  = Rp1.000.000
-
   HARGA NORMAL:
     1 Bulan  = Rp450.000
     3 Bulan  = Rp1.000.000
     1 Tahun  = Rp3.600.000
+
+  HARGA PROMO:
+    1 Bulan  = Rp300.000
+    3 Bulan  = Rp500.000
+    1 Tahun  = Rp1.000.000
 
   KODE AFFILIATE:
     AFFILIATE
@@ -23,34 +23,18 @@
 // ============================================================
 
 const AFFILIATE_CODES = {
-  AFFILIATE: {
-    name: "Affiliate"
-  },
-
-  PROMO: {
-    name: "Promo Affiliate"
-  },
-
-  PARTNER: {
-    name: "Partner"
-  }
+  AFFILIATE: { name: "Affiliate" },
+  PROMO: { name: "Promo Affiliate" },
+  PARTNER: { name: "Partner" }
 };
 
 
 // ============================================================
-// STATUS PROMO
+// STATUS AFFILIATE
 // ============================================================
 
-let affiliatePromoActive = false;
+let affiliatePromoActive = true;
 let activePromo = "";
-
-
-// ============================================================
-// HARGA PROMO DEFAULT
-// PROMO LANGSUNG AKTIF DARI AWAL
-// ============================================================
-
-const DEFAULT_PROMO = true;
 
 
 // ============================================================
@@ -66,14 +50,16 @@ function formatRupiah(number) {
 
 // ============================================================
 // AMBIL KODE REFERRAL DARI URL
-// CONTOH:
-// ?ref=AFFILIATE
+// Contoh:
+// https://domainkamu.com/?ref=AFFILIATE
 // ============================================================
 
 function getReferralCode() {
 
   const ref =
-    new URLSearchParams(window.location.search).get("ref");
+    new URLSearchParams(
+      window.location.search
+    ).get("ref");
 
   return (ref || "")
     .trim()
@@ -87,64 +73,51 @@ function getReferralCode() {
 
 function applyReferralFromUrl() {
 
-  const code = getReferralCode();
+  const code =
+    getReferralCode();
 
   const input =
-    document.getElementById("promoInput");
+    document.getElementById(
+      "promoInput"
+    );
 
 
-  if (code && input) {
+  if (
+    code &&
+    input &&
+    Object.prototype.hasOwnProperty.call(
+      AFFILIATE_CODES,
+      code
+    )
+  ) {
 
     input.value = code;
 
-    applyPromo(true);
-
-  } else {
-
-    // Tidak ada referral
-    // Harga promo tetap tampil
     affiliatePromoActive = true;
+    activePromo = code;
 
-    activePromo = "";
+    showAffiliateInfo();
 
-    refreshPrices();
+    const message =
+      document.getElementById(
+        "promoMessage"
+      );
 
-  }
-}
+    if (message) {
 
+      message.textContent =
+        "✓ Referral affiliate terdeteksi — harga khusus diterapkan otomatis.";
 
-// ============================================================
-// INFO AFFILIATE
-// ============================================================
+      message.style.color =
+        "#7ce7b0";
 
-function showAffiliateInfo() {
+    }
 
-  const box =
-    document.getElementById("affiliateInfo");
-
-
-  if (!box) return;
-
-
-  if (!activePromo) {
-
-    box.hidden = true;
-
-    return;
   }
 
 
-  const data =
-    AFFILIATE_CODES[activePromo];
-
-
-  box.innerHTML =
-    `🎉 <b>Harga Affiliate Aktif</b><br>` +
-    `<span>Referral: <b>${activePromo}</b>` +
-    `${data?.name ? ` — ${data.name}` : ""}</span>`;
-
-
-  box.hidden = false;
+  // Pastikan harga promo tetap tampil
+  refreshPrices();
 }
 
 
@@ -155,10 +128,14 @@ function showAffiliateInfo() {
 function applyPromo(fromUrl = false) {
 
   const input =
-    document.getElementById("promoInput");
+    document.getElementById(
+      "promoInput"
+    );
 
   const message =
-    document.getElementById("promoMessage");
+    document.getElementById(
+      "promoMessage"
+    );
 
 
   if (!input || !message) return;
@@ -176,22 +153,24 @@ function applyPromo(fromUrl = false) {
 
   if (!code) {
 
-    // Promo tetap aktif
-    affiliatePromoActive = true;
+    /*
+      Harga promo tetap tampil.
+      Kode affiliate hanya digunakan
+      untuk referral / tracking.
+    */
 
+    affiliatePromoActive = true;
     activePromo = "";
 
 
     message.textContent =
-      "✓ Harga promo sedang aktif.";
-
+      "✓ Harga promo sedang berlaku.";
 
     message.style.color =
       "#7ce7b0";
 
 
     refreshPrices();
-
     showAffiliateInfo();
 
     return;
@@ -210,14 +189,13 @@ function applyPromo(fromUrl = false) {
   ) {
 
     affiliatePromoActive = true;
-
     activePromo = code;
 
 
     message.textContent =
       fromUrl
-        ? "✓ Referral affiliate terdeteksi — harga promo diterapkan otomatis."
-        : "✓ Kode promo affiliate aktif — harga promo diterapkan.";
+        ? "✓ Referral affiliate terdeteksi — harga khusus diterapkan otomatis."
+        : "✓ Kode promo affiliate aktif — harga khusus diterapkan.";
 
 
     message.style.color =
@@ -225,7 +203,6 @@ function applyPromo(fromUrl = false) {
 
 
     refreshPrices();
-
     showAffiliateInfo();
 
     return;
@@ -236,44 +213,87 @@ function applyPromo(fromUrl = false) {
   // KODE TIDAK VALID
   // ==========================================================
 
-  affiliatePromoActive = true;
+  /*
+    Kode salah tidak menghilangkan harga promo.
+    Harga promo tetap ditampilkan.
+  */
 
+  affiliatePromoActive = true;
   activePromo = "";
 
 
   message.textContent =
-    "Kode affiliate tidak ditemukan, tetapi harga promo tetap berlaku.";
-
+    "Kode promo affiliate tidak ditemukan, tetapi harga promo tetap berlaku.";
 
   message.style.color =
     "#ffcf70";
 
 
   refreshPrices();
-
   showAffiliateInfo();
 }
 
 
 // ============================================================
-// REFRESH SEMUA HARGA
+// TAMPILKAN INFO AFFILIATE
+// ============================================================
+
+function showAffiliateInfo() {
+
+  const box =
+    document.getElementById(
+      "affiliateInfo"
+    );
+
+
+  if (!box) return;
+
+
+  if (!activePromo) {
+
+    box.hidden = true;
+
+    return;
+  }
+
+
+  const data =
+    AFFILIATE_CODES[
+      activePromo
+    ];
+
+
+  box.innerHTML =
+    `🎉 <b>Harga Affiliate Aktif</b><br>` +
+    `<span>Referral: <b>${activePromo}</b>` +
+    `${data?.name ? ` — ${data.name}` : ""}</span>`;
+
+
+  box.hidden = false;
+}
+
+
+// ============================================================
+// REFRESH HARGA
 // ============================================================
 
 function refreshPrices() {
 
   document
-    .querySelectorAll(".price-card")
+    .querySelectorAll(
+      ".price-card"
+    )
     .forEach(card => {
 
 
-      // Harga normal dari HTML
+      // Harga normal
       const normalPrice =
         Number(
           card.dataset.price || 0
         );
 
 
-      // Harga promo dari HTML
+      // Harga promo
       const promoPrice =
         Number(
           card.dataset.promoPrice ||
@@ -281,14 +301,17 @@ function refreshPrices() {
         );
 
 
-      // ======================================================
-      // PROMO SELALU AKTIF
-      // ======================================================
+      /*
+        PROMO SELALU AKTIF
+        Jadi harga yang ditampilkan:
+        
+        450.000 → 300.000
+        1.000.000 → 500.000
+        3.600.000 → 1.000.000
+      */
 
       const finalPrice =
-        affiliatePromoActive
-          ? promoPrice
-          : normalPrice;
+        promoPrice;
 
 
       const value =
@@ -304,7 +327,7 @@ function refreshPrices() {
 
 
       // ======================================================
-      // UPDATE HARGA
+      // HARGA UTAMA
       // ======================================================
 
       if (value) {
@@ -318,19 +341,20 @@ function refreshPrices() {
 
 
       // ======================================================
-      // UPDATE HARGA NORMAL / HEMAT
+      // HARGA NORMAL / HEMAT
       // ======================================================
 
       if (old) {
 
         if (
-          affiliatePromoActive &&
           normalPrice > promoPrice
         ) {
 
           old.textContent =
             `Harga normal Rp ${formatRupiah(normalPrice)} • ` +
-            `Hemat Rp ${formatRupiah(normalPrice - promoPrice)}`;
+            `Hemat Rp ${formatRupiah(
+              normalPrice - promoPrice
+            )}`;
 
         } else {
 
@@ -351,7 +375,9 @@ function refreshPrices() {
 function choosePlan(button) {
 
   const card =
-    button.closest(".price-card");
+    button.closest(
+      ".price-card"
+    );
 
 
   if (!card) return;
@@ -374,33 +400,43 @@ function choosePlan(button) {
     );
 
 
-  // Harga promo aktif
+  // ==========================================================
+  // SELALU GUNAKAN HARGA PROMO
+  // ==========================================================
+
   const finalPrice =
-    affiliatePromoActive
-      ? promoPrice
-      : normalPrice;
+    promoPrice;
 
 
   // ==========================================================
   // PESAN WHATSAPP
   // ==========================================================
 
-  const message =
+  let message =
 
     `Halo Admin, saya ingin membeli BOT CREATOR UNLIMITED PRO X.%0A%0A` +
 
-    `Paket: ${encodeURIComponent(plan)}%0A` +
-
-    `Harga: Rp ${encodeURIComponent(
-      formatRupiah(finalPrice)
+    `Paket: ${encodeURIComponent(
+      plan
     )}%0A` +
 
-    (
-      activePromo
-        ? `Kode Promo Affiliate: ${encodeURIComponent(activePromo)}%0A`
-        : `Harga Promo%0A`
-    ) +
+    `Harga Promo: Rp ${encodeURIComponent(
+      formatRupiah(finalPrice)
+    )}%0A`;
 
+
+  // Tambahkan kode affiliate jika ada
+  if (activePromo) {
+
+    message +=
+      `Kode Promo Affiliate: ${encodeURIComponent(
+        activePromo
+      )}%0A`;
+
+  }
+
+
+  message +=
     `%0AMohon info pembayaran dan aktivasi lisensinya.`;
 
 
@@ -420,11 +456,12 @@ function choosePlan(button) {
     `https://wa.me/${whatsappNumber}?text=${message}`,
     "_blank"
   );
+
 }
 
 
 // ============================================================
-// JALANKAN SAAT WEBSITE SELESAI DIMUAT
+// START WEBSITE
 // ============================================================
 
 document.addEventListener(
@@ -432,14 +469,12 @@ document.addEventListener(
   function () {
 
     // Promo langsung aktif
-    affiliatePromoActive = DEFAULT_PROMO;
-
-    activePromo = "";
+    affiliatePromoActive = true;
 
     // Tampilkan harga promo
     refreshPrices();
 
-    // Cek referral URL
+    // Cek referral dari URL
     applyReferralFromUrl();
 
   }
