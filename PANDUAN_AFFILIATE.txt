@@ -1,0 +1,32 @@
+PANDUAN LINK AFFILIATE - BOT CREATOR UNLIMITED PRO X
+
+Kode contoh yang sudah aktif:
+BUDI10 = BUDI
+ANDI20 = ANDI
+SITI30 = SITI
+JOKO40 = JOKO
+
+Cara membuat link:
+https://DOMAIN-KAMU.com/?ref=BUDI10
+
+Saat link dibuka dengan ?ref=KODE, harga affiliate akan aktif.
+Saat pembeli klik WhatsApp, kode dan nama affiliate ikut dikirim ke admin.
+
+Cara menambah affiliate:
+Buka script.js, cari:
+
+const AFFILIATE_CODES = {
+  BUDI10: "BUDI",
+  ANDI20: "ANDI",
+  SITI30: "SITI",
+  JOKO40: "JOKO"
+};
+
+Tambahkan baris baru, contoh:
+  RINA50: "RINA",
+
+Pastikan baris terakhir tidak memakai koma jika tidak ada baris setelahnya.
+
+PENTING:
+Sistem ini hanya mengatur referral/promo di landing page.
+Pencatatan komisi, validasi pembayaran, dan dashboard admin affiliate belum termasuk.
