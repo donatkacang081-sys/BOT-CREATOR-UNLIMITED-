@@ -6,7 +6,7 @@
     3 Bulan  = Rp1.000.000
     1 Tahun  = Rp3.600.000
 
-  HARGA PROMO:
+  HARGA AFFILIATE:
     1 Bulan  = Rp300.000
     3 Bulan  = Rp500.000
     1 Tahun  = Rp1.000.000
@@ -19,21 +19,29 @@
 
 
 // ============================================================
-// KODE AFFILIATE
+// KODE AFFILIATE YANG VALID
 // ============================================================
 
 const AFFILIATE_CODES = {
-  AFFILIATE: { name: "Affiliate" },
-  PROMO: { name: "Promo Affiliate" },
-  PARTNER: { name: "Partner" }
+  AFFILIATE: {
+    name: "Affiliate"
+  },
+
+  PROMO: {
+    name: "Promo Affiliate"
+  },
+
+  PARTNER: {
+    name: "Partner"
+  }
 };
 
 
 // ============================================================
-// STATUS AFFILIATE
+// STATUS PROMO
 // ============================================================
 
-let affiliatePromoActive = true;
+let affiliatePromoActive = false;
 let activePromo = "";
 
 
@@ -49,9 +57,9 @@ function formatRupiah(number) {
 
 
 // ============================================================
-// AMBIL KODE REFERRAL DARI URL
+// AMBIL REFERRAL DARI URL
 // Contoh:
-// https://domainkamu.com/?ref=AFFILIATE
+// ?ref=AFFILIATE
 // ============================================================
 
 function getReferralCode() {
@@ -93,31 +101,52 @@ function applyReferralFromUrl() {
 
     input.value = code;
 
-    affiliatePromoActive = true;
-    activePromo = code;
+    activatePromo(
+      code,
+      true
+    );
 
-    showAffiliateInfo();
+  }
 
-    const message =
-      document.getElementById(
-        "promoMessage"
-      );
+}
 
-    if (message) {
 
-      message.textContent =
-        "✓ Referral affiliate terdeteksi — harga khusus diterapkan otomatis.";
+// ============================================================
+// AKTIFKAN PROMO
+// ============================================================
 
-      message.style.color =
-        "#7ce7b0";
+function activatePromo(
+  code,
+  fromUrl = false
+) {
 
-    }
+  const message =
+    document.getElementById(
+      "promoMessage"
+    );
+
+
+  affiliatePromoActive = true;
+  activePromo = code;
+
+
+  if (message) {
+
+    message.textContent =
+      fromUrl
+        ? "✓ Referral affiliate terdeteksi — harga diskon aktif."
+        : "✓ Kode promo affiliate aktif — harga diskon aktif.";
+
+    message.style.color =
+      "#7ce7b0";
 
   }
 
 
-  // Pastikan harga promo tetap tampil
   refreshPrices();
+
+  showAffiliateInfo();
+
 }
 
 
@@ -153,24 +182,19 @@ function applyPromo(fromUrl = false) {
 
   if (!code) {
 
-    /*
-      Harga promo tetap tampil.
-      Kode affiliate hanya digunakan
-      untuk referral / tracking.
-    */
-
-    affiliatePromoActive = true;
+    affiliatePromoActive = false;
     activePromo = "";
 
 
     message.textContent =
-      "✓ Harga promo sedang berlaku.";
+      "Masukkan kode promo affiliate terlebih dahulu.";
 
     message.style.color =
-      "#7ce7b0";
+      "#ff9a9a";
 
 
     refreshPrices();
+
     showAffiliateInfo();
 
     return;
@@ -188,22 +212,10 @@ function applyPromo(fromUrl = false) {
     )
   ) {
 
-    affiliatePromoActive = true;
-    activePromo = code;
-
-
-    message.textContent =
+    activatePromo(
+      code,
       fromUrl
-        ? "✓ Referral affiliate terdeteksi — harga khusus diterapkan otomatis."
-        : "✓ Kode promo affiliate aktif — harga khusus diterapkan.";
-
-
-    message.style.color =
-      "#7ce7b0";
-
-
-    refreshPrices();
-    showAffiliateInfo();
+    );
 
     return;
   }
@@ -213,29 +225,26 @@ function applyPromo(fromUrl = false) {
   // KODE TIDAK VALID
   // ==========================================================
 
-  /*
-    Kode salah tidak menghilangkan harga promo.
-    Harga promo tetap ditampilkan.
-  */
-
-  affiliatePromoActive = true;
+  affiliatePromoActive = false;
   activePromo = "";
 
 
   message.textContent =
-    "Kode promo affiliate tidak ditemukan, tetapi harga promo tetap berlaku.";
+    "❌ Kode promo affiliate tidak ditemukan atau tidak berlaku.";
 
   message.style.color =
-    "#ffcf70";
+    "#ff9a9a";
 
 
   refreshPrices();
+
   showAffiliateInfo();
+
 }
 
 
 // ============================================================
-// TAMPILKAN INFO AFFILIATE
+// INFO AFFILIATE
 // ============================================================
 
 function showAffiliateInfo() {
@@ -249,7 +258,10 @@ function showAffiliateInfo() {
   if (!box) return;
 
 
-  if (!activePromo) {
+  if (
+    !affiliatePromoActive ||
+    !activePromo
+  ) {
 
     box.hidden = true;
 
@@ -270,6 +282,7 @@ function showAffiliateInfo() {
 
 
   box.hidden = false;
+
 }
 
 
@@ -286,14 +299,20 @@ function refreshPrices() {
     .forEach(card => {
 
 
-      // Harga normal
+      // ======================================================
+      // HARGA NORMAL
+      // ======================================================
+
       const normalPrice =
         Number(
           card.dataset.price || 0
         );
 
 
-      // Harga promo
+      // ======================================================
+      // HARGA AFFILIATE
+      // ======================================================
+
       const promoPrice =
         Number(
           card.dataset.promoPrice ||
@@ -301,17 +320,14 @@ function refreshPrices() {
         );
 
 
-      /*
-        PROMO SELALU AKTIF
-        Jadi harga yang ditampilkan:
-        
-        450.000 → 300.000
-        1.000.000 → 500.000
-        3.600.000 → 1.000.000
-      */
+      // ======================================================
+      // TENTUKAN HARGA
+      // ======================================================
 
       const finalPrice =
-        promoPrice;
+        affiliatePromoActive
+          ? promoPrice
+          : normalPrice;
 
 
       const value =
@@ -327,7 +343,7 @@ function refreshPrices() {
 
 
       // ======================================================
-      // HARGA UTAMA
+      // UPDATE HARGA UTAMA
       // ======================================================
 
       if (value) {
@@ -341,12 +357,13 @@ function refreshPrices() {
 
 
       // ======================================================
-      // HARGA NORMAL / HEMAT
+      // UPDATE INFORMASI HARGA
       // ======================================================
 
       if (old) {
 
         if (
+          affiliatePromoActive &&
           normalPrice > promoPrice
         ) {
 
@@ -358,13 +375,15 @@ function refreshPrices() {
 
         } else {
 
-          old.textContent = "";
+          old.textContent =
+            "";
 
         }
 
       }
 
     });
+
 }
 
 
@@ -401,11 +420,13 @@ function choosePlan(button) {
 
 
   // ==========================================================
-  // SELALU GUNAKAN HARGA PROMO
+  // TENTUKAN HARGA
   // ==========================================================
 
   const finalPrice =
-    promoPrice;
+    affiliatePromoActive
+      ? promoPrice
+      : normalPrice;
 
 
   // ==========================================================
@@ -420,18 +441,26 @@ function choosePlan(button) {
       plan
     )}%0A` +
 
-    `Harga Promo: Rp ${encodeURIComponent(
+    `Harga: Rp ${encodeURIComponent(
       formatRupiah(finalPrice)
     )}%0A`;
 
 
-  // Tambahkan kode affiliate jika ada
-  if (activePromo) {
+  // ==========================================================
+  // JIKA MENGGUNAKAN AFFILIATE
+  // ==========================================================
+
+  if (affiliatePromoActive && activePromo) {
 
     message +=
       `Kode Promo Affiliate: ${encodeURIComponent(
         activePromo
       )}%0A`;
+
+  } else {
+
+    message +=
+      `Harga Normal%0A`;
 
   }
 
@@ -468,11 +497,27 @@ document.addEventListener(
   "DOMContentLoaded",
   function () {
 
-    // Promo langsung aktif
-    affiliatePromoActive = true;
+    /*
+      PROMO TIDAK AKTIF SAAT PERTAMA BUKA.
 
-    // Tampilkan harga promo
+      Jadi:
+        1 Bulan  = Rp450.000
+        3 Bulan  = Rp1.000.000
+        1 Tahun  = Rp3.600.000
+
+      Setelah kode affiliate valid:
+        1 Bulan  = Rp300.000
+        3 Bulan  = Rp500.000
+        1 Tahun  = Rp1.000.000
+    */
+
+    affiliatePromoActive = false;
+    activePromo = "";
+
+
+    // Tampilkan harga normal
     refreshPrices();
+
 
     // Cek referral dari URL
     applyReferralFromUrl();
