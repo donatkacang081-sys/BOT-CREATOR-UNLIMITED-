@@ -1,526 +1,536 @@
-/*
-  BOT CREATOR UNLIMITED PRO X
-
-  HARGA NORMAL:
-    1 Bulan  = Rp450.000
-    3 Bulan  = Rp1.000.000
-    1 Tahun  = Rp3.600.000
-
-  HARGA AFFILIATE:
-    1 Bulan  = Rp300.000
-    3 Bulan  = Rp500.000
-    1 Tahun  = Rp1.000.000
-
-  KODE AFFILIATE:
-    AFFILIATE
-    PROMO
-    PARTNER
-*/
-
-
 // ============================================================
-// KODE AFFILIATE YANG VALID
+// BOT CREATOR UNLIMITED PRO X
+// AFFILIATE + PROMO SYSTEM
 // ============================================================
 
-const AFFILIATE_CODES = {
-  AFFILIATE: {
-    name: "Affiliate"
-  },
-
-  PROMO: {
-    name: "Promo Affiliate"
-  },
-
-  PARTNER: {
-    name: "Partner"
-  }
-};
-
+const WHATSAPP_NUMBER = "6283107174228";
 
 // ============================================================
-// STATUS PROMO
+// STATE
 // ============================================================
 
 let affiliatePromoActive = false;
-let activePromo = "";
-
+let activeAffiliateCode = "";
+let activeAffiliateName = "";
 
 // ============================================================
 // FORMAT RUPIAH
 // ============================================================
 
-function formatRupiah(number) {
-  return new Intl.NumberFormat("id-ID").format(
-    Math.round(number)
-  );
+function formatRupiah(value) {
+    return new Intl.NumberFormat("id-ID").format(Number(value));
 }
 
-
 // ============================================================
-// AMBIL REFERRAL DARI URL
-// Contoh:
-// ?ref=AFFILIATE
+// GET REFERRAL FROM URL
+//
+// Example:
+// ?ref=BUDI-7K4P&aff=Budi
 // ============================================================
 
-function getReferralCode() {
+function getReferralData() {
+    const params = new URLSearchParams(window.location.search);
 
-  const ref =
-    new URLSearchParams(
-      window.location.search
-    ).get("ref");
+    const ref = (params.get("ref") || "").trim().toUpperCase();
+    const aff = (params.get("aff") || "").trim();
 
-  return (ref || "")
-    .trim()
-    .toUpperCase();
+    if (!ref) {
+        return null;
+    }
+
+    // Affiliate code format:
+    // NAME-XXXX
+    // Example BUDI-7K4P
+    const validFormat = /^[A-Z0-9]+-[A-Z0-9]{4,8}$/;
+
+    if (!validFormat.test(ref)) {
+        return null;
+    }
+
+    return {
+        code: ref,
+        name: aff || ref
+    };
 }
 
-
 // ============================================================
-// REFERRAL OTOMATIS DARI URL
+// APPLY REFERRAL FROM URL
 // ============================================================
 
-function applyReferralFromUrl() {
+function applyReferralFromURL() {
 
-  const code =
-    getReferralCode();
+    const referral = getReferralData();
 
-  const input =
-    document.getElementById(
-      "promoInput"
+    if (!referral) {
+        affiliatePromoActive = false;
+        activeAffiliateCode = "";
+        activeAffiliateName = "";
+        refreshPrices();
+        return;
+    }
+
+    affiliatePromoActive = true;
+    activeAffiliateCode = referral.code;
+    activeAffiliateName = referral.name;
+
+    const input = document.getElementById("promoInput");
+
+    if (input) {
+        input.value = referral.code;
+    }
+
+    showAffiliateInfo(
+        referral.name,
+        referral.code,
+        "Link affiliate terdeteksi otomatis. Harga promo aktif."
     );
-
-
-  if (
-    code &&
-    input &&
-    Object.prototype.hasOwnProperty.call(
-      AFFILIATE_CODES,
-      code
-    )
-  ) {
-
-    input.value = code;
-
-    activatePromo(
-      code,
-      true
-    );
-
-  }
-
-}
-
-
-// ============================================================
-// AKTIFKAN PROMO
-// ============================================================
-
-function activatePromo(
-  code,
-  fromUrl = false
-) {
-
-  const message =
-    document.getElementById(
-      "promoMessage"
-    );
-
-
-  affiliatePromoActive = true;
-  activePromo = code;
-
-
-  if (message) {
-
-    message.textContent =
-      fromUrl
-        ? "✓ Referral affiliate terdeteksi — harga diskon aktif."
-        : "✓ Kode promo affiliate aktif — harga diskon aktif.";
-
-    message.style.color =
-      "#7ce7b0";
-
-  }
-
-
-  refreshPrices();
-
-  showAffiliateInfo();
-
-}
-
-
-// ============================================================
-// APPLY PROMO
-// ============================================================
-
-function applyPromo(fromUrl = false) {
-
-  const input =
-    document.getElementById(
-      "promoInput"
-    );
-
-  const message =
-    document.getElementById(
-      "promoMessage"
-    );
-
-
-  if (!input || !message) return;
-
-
-  const code =
-    input.value
-      .trim()
-      .toUpperCase();
-
-
-  // ==========================================================
-  // KODE KOSONG
-  // ==========================================================
-
-  if (!code) {
-
-    affiliatePromoActive = false;
-    activePromo = "";
-
-
-    message.textContent =
-      "Masukkan kode promo affiliate terlebih dahulu.";
-
-    message.style.color =
-      "#ff9a9a";
-
 
     refreshPrices();
-
-    showAffiliateInfo();
-
-    return;
-  }
-
-
-  // ==========================================================
-  // KODE VALID
-  // ==========================================================
-
-  if (
-    Object.prototype.hasOwnProperty.call(
-      AFFILIATE_CODES,
-      code
-    )
-  ) {
-
-    activatePromo(
-      code,
-      fromUrl
-    );
-
-    return;
-  }
-
-
-  // ==========================================================
-  // KODE TIDAK VALID
-  // ==========================================================
-
-  affiliatePromoActive = false;
-  activePromo = "";
-
-
-  message.textContent =
-    "❌ Kode promo affiliate tidak ditemukan atau tidak berlaku.";
-
-  message.style.color =
-    "#ff9a9a";
-
-
-  refreshPrices();
-
-  showAffiliateInfo();
-
 }
 
-
 // ============================================================
-// INFO AFFILIATE
+// SHOW AFFILIATE INFO
 // ============================================================
 
-function showAffiliateInfo() {
+function showAffiliateInfo(name, code, message = "") {
 
-  const box =
-    document.getElementById(
-      "affiliateInfo"
-    );
+    const box = document.getElementById("affiliateInfo");
 
+    if (!box) return;
 
-  if (!box) return;
+    box.innerHTML = "";
 
+    const title = document.createElement("strong");
+    title.textContent = "🤝 Affiliate Aktif";
 
-  if (
-    !affiliatePromoActive ||
-    !activePromo
-  ) {
+    const line1 = document.createElement("div");
+    line1.textContent = `Nama: ${name}`;
 
-    box.hidden = true;
+    const line2 = document.createElement("div");
+    line2.textContent = `Kode: ${code}`;
 
-    return;
-  }
+    box.appendChild(title);
+    box.appendChild(line1);
+    box.appendChild(line2);
 
+    if (message) {
+        const msg = document.createElement("div");
+        msg.textContent = message;
+        msg.style.marginTop = "5px";
+        box.appendChild(msg);
+    }
 
-  const data =
-    AFFILIATE_CODES[
-      activePromo
-    ];
-
-
-  box.innerHTML =
-    `🎉 <b>Harga Affiliate Aktif</b><br>` +
-    `<span>Referral: <b>${activePromo}</b>` +
-    `${data?.name ? ` — ${data.name}` : ""}</span>`;
-
-
-  box.hidden = false;
-
+    box.style.display = "block";
 }
 
+// ============================================================
+// HIDE AFFILIATE INFO
+// ============================================================
+
+function hideAffiliateInfo() {
+
+    const box = document.getElementById("affiliateInfo");
+
+    if (box) {
+        box.innerHTML = "";
+        box.style.display = "none";
+    }
+}
 
 // ============================================================
-// REFRESH HARGA
+// REFRESH PRICES
 // ============================================================
 
 function refreshPrices() {
 
-  document
-    .querySelectorAll(
-      ".price-card"
-    )
-    .forEach(card => {
+    const cards = document.querySelectorAll(".price-card");
 
+    cards.forEach(card => {
 
-      // ======================================================
-      // HARGA NORMAL
-      // ======================================================
+        const normalPrice = card.dataset.price;
+        const promoPrice = card.dataset.promoPrice;
 
-      const normalPrice =
-        Number(
-          card.dataset.price || 0
-        );
+        const priceElement = card.querySelector(".price-value");
 
+        if (!priceElement) return;
 
-      // ======================================================
-      // HARGA AFFILIATE
-      // ======================================================
+        if (affiliatePromoActive && promoPrice) {
 
-      const promoPrice =
-        Number(
-          card.dataset.promoPrice ||
-          normalPrice
-        );
-
-
-      // ======================================================
-      // TENTUKAN HARGA
-      // ======================================================
-
-      const finalPrice =
-        affiliatePromoActive
-          ? promoPrice
-          : normalPrice;
-
-
-      const value =
-        card.querySelector(
-          ".price-value"
-        );
-
-
-      const old =
-        card.querySelector(
-          ".old-price"
-        );
-
-
-      // ======================================================
-      // UPDATE HARGA UTAMA
-      // ======================================================
-
-      if (value) {
-
-        value.textContent =
-          formatRupiah(
-            finalPrice
-          );
-
-      }
-
-
-      // ======================================================
-      // UPDATE INFORMASI HARGA
-      // ======================================================
-
-      if (old) {
-
-        if (
-          affiliatePromoActive &&
-          normalPrice > promoPrice
-        ) {
-
-          old.textContent =
-            `Harga normal Rp ${formatRupiah(normalPrice)} • ` +
-            `Hemat Rp ${formatRupiah(
-              normalPrice - promoPrice
-            )}`;
+            priceElement.textContent = formatRupiah(promoPrice);
 
         } else {
 
-          old.textContent =
-            "";
+            priceElement.textContent = formatRupiah(normalPrice);
 
         }
-
-      }
-
     });
-
 }
 
-
 // ============================================================
-// PILIH PAKET
+// APPLY PROMO CODE MANUALLY
 // ============================================================
 
-function choosePlan(button) {
+function applyPromo() {
 
-  const card =
-    button.closest(
-      ".price-card"
+    const input = document.getElementById("promoInput");
+    const message = document.getElementById("promoMessage");
+
+    if (!input) return;
+
+    const code = input.value.trim().toUpperCase();
+
+    if (!code) {
+
+        affiliatePromoActive = false;
+        activeAffiliateCode = "";
+        activeAffiliateName = "";
+
+        hideAffiliateInfo();
+        refreshPrices();
+
+        if (message) {
+            message.textContent = "Masukkan kode affiliate terlebih dahulu.";
+        }
+
+        return;
+    }
+
+    // Accept generated affiliate code format
+    const validFormat = /^[A-Z0-9]+-[A-Z0-9]{4,8}$/;
+
+    if (!validFormat.test(code)) {
+
+        affiliatePromoActive = false;
+        activeAffiliateCode = "";
+        activeAffiliateName = "";
+
+        hideAffiliateInfo();
+        refreshPrices();
+
+        if (message) {
+            message.textContent =
+                "❌ Kode affiliate tidak valid.";
+        }
+
+        return;
+    }
+
+    affiliatePromoActive = true;
+    activeAffiliateCode = code;
+    activeAffiliateName = code;
+
+    showAffiliateInfo(
+        code,
+        code,
+        "Kode affiliate berhasil digunakan. Harga promo aktif."
     );
 
-
-  if (!card) return;
-
-
-  const plan =
-    card.dataset.plan || "";
-
-
-  const normalPrice =
-    Number(
-      card.dataset.price || 0
-    );
-
-
-  const promoPrice =
-    Number(
-      card.dataset.promoPrice ||
-      normalPrice
-    );
-
-
-  // ==========================================================
-  // TENTUKAN HARGA
-  // ==========================================================
-
-  const finalPrice =
-    affiliatePromoActive
-      ? promoPrice
-      : normalPrice;
-
-
-  // ==========================================================
-  // PESAN WHATSAPP
-  // ==========================================================
-
-  let message =
-
-    `Halo Admin, saya ingin membeli BOT CREATOR UNLIMITED PRO X.%0A%0A` +
-
-    `Paket: ${encodeURIComponent(
-      plan
-    )}%0A` +
-
-    `Harga: Rp ${encodeURIComponent(
-      formatRupiah(finalPrice)
-    )}%0A`;
-
-
-  // ==========================================================
-  // JIKA MENGGUNAKAN AFFILIATE
-  // ==========================================================
-
-  if (affiliatePromoActive && activePromo) {
-
-    message +=
-      `Kode Promo Affiliate: ${encodeURIComponent(
-        activePromo
-      )}%0A`;
-
-  } else {
-
-    message +=
-      `Harga Normal%0A`;
-
-  }
-
-
-  message +=
-    `%0AMohon info pembayaran dan aktivasi lisensinya.`;
-
-
-  // ==========================================================
-  // NOMOR WHATSAPP ADMIN
-  // ==========================================================
-
-  const whatsappNumber =
-    "6283107174228";
-
-
-  // ==========================================================
-  // BUKA WHATSAPP
-  // ==========================================================
-
-  window.open(
-    `https://wa.me/${whatsappNumber}?text=${message}`,
-    "_blank"
-  );
-
-}
-
-
-// ============================================================
-// START WEBSITE
-// ============================================================
-
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
-
-    /*
-      PROMO TIDAK AKTIF SAAT PERTAMA BUKA.
-
-      Jadi:
-        1 Bulan  = Rp450.000
-        3 Bulan  = Rp1.000.000
-        1 Tahun  = Rp3.600.000
-
-      Setelah kode affiliate valid:
-        1 Bulan  = Rp300.000
-        3 Bulan  = Rp500.000
-        1 Tahun  = Rp1.000.000
-    */
-
-    affiliatePromoActive = false;
-    activePromo = "";
-
-
-    // Tampilkan harga normal
     refreshPrices();
 
+    if (message) {
+        message.textContent =
+            "✅ Kode affiliate aktif. Harga promo telah diterapkan.";
+    }
+}
 
-    // Cek referral dari URL
-    applyReferralFromUrl();
+// ============================================================
+// AFFILIATE GENERATOR
+// ============================================================
 
-  }
-);
+function randomAffiliateSuffix(length = 4) {
+
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let result = "";
+
+    if (window.crypto && crypto.getRandomValues) {
+
+        const array = new Uint32Array(length);
+
+        crypto.getRandomValues(array);
+
+        for (let i = 0; i < length; i++) {
+            result += chars[array[i] % chars.length];
+        }
+
+    } else {
+
+        for (let i = 0; i < length; i++) {
+            result += chars[Math.floor(Math.random() * chars.length)];
+        }
+    }
+
+    return result;
+}
+
+// ============================================================
+// CLEAN AFFILIATE NAME
+// ============================================================
+
+function cleanAffiliateName(name) {
+
+    return name
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]+/g, "")
+        .substring(0, 10);
+}
+
+// ============================================================
+// GENERATE AFFILIATE CODE
+// ============================================================
+
+function generateAffiliateCode(name) {
+
+    const cleanName = cleanAffiliateName(name);
+
+    if (!cleanName) {
+        return "";
+    }
+
+    return `${cleanName}-${randomAffiliateSuffix(4)}`;
+}
+
+// ============================================================
+// GENERATE AFFILIATE LINK
+// ============================================================
+
+function generateAffiliateLink(name, code) {
+
+    const baseURL =
+        window.location.origin +
+        window.location.pathname;
+
+    return `${baseURL}?ref=${encodeURIComponent(code)}&aff=${encodeURIComponent(name)}`;
+}
+
+// ============================================================
+// GENERATE AFFILIATE
+// ============================================================
+
+function createAffiliate() {
+
+    const nameInput =
+        document.getElementById("affiliateName");
+
+    const codeInput =
+        document.getElementById("affiliateCode");
+
+    const linkInput =
+        document.getElementById("affiliateLink");
+
+    const result =
+        document.getElementById("affiliateResult");
+
+    const message =
+        document.getElementById("affiliateGeneratorMessage");
+
+    if (!nameInput || !codeInput || !linkInput) {
+        return;
+    }
+
+    const name = nameInput.value.trim();
+
+    if (!name) {
+
+        if (message) {
+            message.textContent =
+                "❌ Masukkan nama affiliate terlebih dahulu.";
+        }
+
+        return;
+    }
+
+    const code = generateAffiliateCode(name);
+
+    const link = generateAffiliateLink(name, code);
+
+    codeInput.value = code;
+    linkInput.value = link;
+
+    if (result) {
+        result.hidden = false;
+    }
+
+    if (message) {
+        message.textContent =
+            "✅ Affiliate berhasil dibuat.";
+    }
+}
+
+// ============================================================
+// COPY AFFILIATE LINK
+// ============================================================
+
+async function copyAffiliateLink() {
+
+    const input =
+        document.getElementById("affiliateLink");
+
+    const message =
+        document.getElementById("affiliateGeneratorMessage");
+
+    if (!input || !input.value) {
+        return;
+    }
+
+    try {
+
+        await navigator.clipboard.writeText(input.value);
+
+        if (message) {
+            message.textContent =
+                "✅ Link affiliate berhasil disalin.";
+        }
+
+    } catch (error) {
+
+        input.select();
+        document.execCommand("copy");
+
+        if (message) {
+            message.textContent =
+                "✅ Link affiliate berhasil disalin.";
+        }
+    }
+}
+
+// ============================================================
+// SHARE AFFILIATE VIA WHATSAPP
+// ============================================================
+
+function shareAffiliateWhatsApp() {
+
+    const nameInput =
+        document.getElementById("affiliateName");
+
+    const codeInput =
+        document.getElementById("affiliateCode");
+
+    const linkInput =
+        document.getElementById("affiliateLink");
+
+    if (!nameInput || !codeInput || !linkInput) {
+        return;
+    }
+
+    const name = nameInput.value.trim();
+    const code = codeInput.value.trim();
+    const link = linkInput.value.trim();
+
+    if (!name || !code || !link) {
+        return;
+    }
+
+    const text =
+`🤝 LINK AFFILIATE BOT CREATOR
+
+Halo ${name},
+
+Berikut link affiliate kamu:
+
+${link}
+
+Kode Affiliate:
+${code}
+
+Bagikan link tersebut kepada calon pembeli.
+
+Harga promo akan otomatis aktif melalui link affiliate tersebut.`;
+
+    const url =
+        `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+    window.open(url, "_blank");
+}
+
+// ============================================================
+// CHOOSE PLAN
+// ============================================================
+
+function choosePlan(plan, price) {
+
+    let finalPrice = Number(price);
+
+    const card =
+        document.querySelector(
+            `.price-card[data-plan="${CSS.escape(plan)}"]`
+        );
+
+    if (affiliatePromoActive && card) {
+
+        const promoPrice =
+            Number(card.dataset.promoPrice);
+
+        if (promoPrice) {
+            finalPrice = promoPrice;
+        }
+    }
+
+    const affiliateText =
+        activeAffiliateCode
+            ? `\nAffiliate: ${activeAffiliateName}\nKode Affiliate: ${activeAffiliateCode}`
+            : "";
+
+    const message =
+`Halo, saya ingin membeli BOT CREATOR UNLIMITED PRO X.
+
+Paket: ${plan}
+Harga: Rp${formatRupiah(finalPrice)}${affiliateText}
+
+Mohon informasi pembayaran dan proses aktivasi lisensi.`;
+
+    const url =
+        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+    window.open(url, "_blank");
+}
+
+// ============================================================
+// INITIALIZE
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Initial normal price
+    refreshPrices();
+
+    // Detect affiliate from URL
+    applyReferralFromURL();
+
+    // Generator button
+    const generateButton =
+        document.getElementById("generateAffiliateBtn");
+
+    if (generateButton) {
+
+        generateButton.addEventListener(
+            "click",
+            createAffiliate
+        );
+    }
+
+    // Copy button
+    const copyButton =
+        document.getElementById("copyAffiliateLinkBtn");
+
+    if (copyButton) {
+
+        copyButton.addEventListener(
+            "click",
+            copyAffiliateLink
+        );
+    }
+
+    // WhatsApp share button
+    const shareButton =
+        document.getElementById("shareAffiliateBtn");
+
+    if (shareButton) {
+
+        shareButton.addEventListener(
+            "click",
+            shareAffiliateWhatsApp
+        );
+    }
+});
