@@ -1,1435 +1,204 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <meta
-    name="description"
-    content="BOT CREATOR UNLIMITED PRO X - AI Image & Video Generator dengan Multi Worker, Multi Thread, 4K-5K Image, 1080p Video, Static Camera dan Cinematic Movement."
-  >
-
-  <meta name="theme-color" content="#080b16">
-
-  <title>BOT CREATOR UNLIMITED PRO X — AI Image & Video Generator</title>
-
-  <link rel="stylesheet" href="style.css">
-
-  <style>
-    /* =========================================================
-       PROMO PRICING UPGRADE
-       ========================================================= */
-
-    .promo-hero-banner {
-      position: relative;
-      overflow: hidden;
-      margin: 0 auto 42px;
-      padding: 28px 35px;
-      border: 2px solid rgba(255, 193, 7, 0.85);
-      border-radius: 22px;
-      background:
-        radial-gradient(circle at 10% 50%, rgba(255, 193, 7, .16), transparent 35%),
-        radial-gradient(circle at 90% 50%, rgba(255, 61, 103, .13), transparent 35%),
-        linear-gradient(135deg, #151225, #080b16 55%, #11162b);
-      box-shadow:
-        0 0 35px rgba(255, 193, 7, .12),
-        inset 0 0 30px rgba(255,255,255,.02);
-      text-align: center;
-    }
-
-    .promo-hero-banner::before {
-      content: "";
-      position: absolute;
-      width: 180px;
-      height: 180px;
-      left: -80px;
-      top: -100px;
-      border-radius: 50%;
-      background: rgba(255, 193, 7, .08);
-      filter: blur(20px);
-    }
-
-    .promo-hero-banner::after {
-      content: "";
-      position: absolute;
-      width: 180px;
-      height: 180px;
-      right: -80px;
-      bottom: -100px;
-      border-radius: 50%;
-      background: rgba(0, 174, 255, .10);
-      filter: blur(20px);
-    }
-
-    .promo-title {
-      position: relative;
-      z-index: 2;
-      font-size: clamp(24px, 3vw, 38px);
-      font-weight: 950;
-      line-height: 1.15;
-      color: #ffffff;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: .3px;
-    }
-
-    .promo-title .gold {
-      color: #ffd34d;
-    }
-
-    .promo-prices {
-      position: relative;
-      z-index: 2;
-      font-size: clamp(18px, 2vw, 25px);
-      font-weight: 900;
-      line-height: 1.5;
-      color: #ffffff;
-    }
-
-    .promo-prices span {
-      color: #ffd34d;
-      white-space: nowrap;
-    }
-
-    .promo-subtitle {
-      position: relative;
-      z-index: 2;
-      margin-top: 10px;
-      font-size: clamp(15px, 1.5vw, 20px);
-      font-weight: 800;
-      color: #ff6680;
-    }
-
-    .pricing-section .section-head {
-      margin-bottom: 34px;
-    }
-
-    .pricing-section .section-head > p {
-      font-size: 18px;
-    }
-
-    .new-price-card {
-      position: relative;
-      overflow: visible;
-    }
-
-    .discount-badge {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      width: 88px;
-      height: 88px;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 35% 30%, #ff637d, #ff1744 65%, #d9002f);
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-      font-weight: 950;
-      z-index: 20;
-      box-shadow:
-        0 0 12px rgba(255, 23, 68, .55),
-        0 0 30px rgba(255, 23, 68, .28);
-      border: 3px solid rgba(255,255,255,.15);
-    }
-
-    .discount-badge small {
-      font-size: 11px;
-      letter-spacing: .5px;
-      margin-bottom: 5px;
-      color: #ffffff;
-    }
-
-    .discount-badge strong {
-      font-size: 25px;
-      color: #ffffff;
-    }
-
-    .recommend-badge {
-      position: absolute;
-      top: -21px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 30;
-      white-space: nowrap;
-      padding: 11px 26px;
-      border-radius: 30px;
-      background: linear-gradient(90deg, #713cff, #16b7ef);
-      color: #ffffff;
-      font-size: 17px;
-      font-weight: 950;
-      box-shadow:
-        0 0 20px rgba(113,60,255,.45),
-        0 0 30px rgba(22,183,239,.18);
-      border: 1px solid rgba(255,255,255,.12);
-    }
-
-    .new-price-card.popular {
-      border-color: rgba(113,60,255,.85);
-      box-shadow:
-        0 0 35px rgba(113,60,255,.16),
-        inset 0 0 30px rgba(113,60,255,.03);
-    }
-
-    .plan-description {
-      min-height: 28px;
-      margin-top: -10px;
-      margin-bottom: 4px;
-      font-size: 15px;
-      opacity: .85;
-    }
-
-    .normal-price {
-      margin-top: 15px;
-      margin-bottom: -5px;
-      font-size: 18px;
-      opacity: .58;
-      text-decoration: line-through;
-    }
-
-    .promo-current-price {
-      margin-bottom: 8px;
-    }
-
-    .saving-badge {
-      display: inline-block;
-      padding: 7px 16px;
-      margin-bottom: 17px;
-      border-radius: 30px;
-      background: linear-gradient(90deg, #713cff, #16b7ef);
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: 900;
-      box-shadow: 0 7px 20px rgba(30,120,255,.15);
-    }
-
-    .price-card-features {
-      margin-top: 5px;
-    }
-
-    .price-card-features li {
-      line-height: 1.5;
-    }
-
-    .premium-feature {
-      font-weight: 800;
-    }
-
-    .large-promo-note {
-      margin: 38px auto 0;
-      max-width: 1050px;
-      padding: 25px 25px;
-      border-radius: 18px;
-      text-align: center;
-      background: linear-gradient(
-        135deg,
-        rgba(113,60,255,.12),
-        rgba(22,183,239,.09)
-      );
-      border: 1px solid rgba(113,60,255,.25);
-    }
-
-    .large-promo-note .main-note {
-      font-size: clamp(20px, 2.2vw, 28px);
-      font-weight: 950;
-      color: #ffffff;
-      line-height: 1.4;
-    }
-
-    .large-promo-note .price-line {
-      margin-top: 8px;
-      font-size: clamp(21px, 2.5vw, 32px);
-      font-weight: 950;
-      color: #ffd34d;
-      line-height: 1.4;
-    }
-
-    .large-promo-note .small-note {
-      margin-top: 8px;
-      font-size: 15px;
-      opacity: .75;
-    }
-
-    /* Mobile */
-    @media (max-width: 700px) {
-      .promo-hero-banner {
-        padding: 22px 16px;
-        margin-bottom: 36px;
-      }
-
-      .promo-prices {
-        line-height: 1.7;
-      }
-
-      .discount-badge {
-        width: 72px;
-        height: 72px;
-        top: 14px;
-        right: 14px;
-      }
-
-      .discount-badge small {
-        font-size: 9px;
-      }
-
-      .discount-badge strong {
-        font-size: 21px;
-      }
-
-      .recommend-badge {
-        font-size: 13px;
-        padding: 9px 18px;
-        top: -17px;
-      }
-
-      .plan-description {
-        padding-right: 60px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- =======================================================
-       NAVIGATION
-       ======================================================= -->
-
-  <header class="nav">
-    <div class="wrap nav-inner">
-
-      <a class="brand" href="#top">
-        <span class="brand-icon">✦</span>
-        <span>
-          BOT CREATOR <b>UNLIMITED PRO X</b>
-        </span>
-      </a>
-
-      <nav>
-        <a href="#features">Fitur</a>
-        <a href="#camera">Camera</a>
-        <a href="#workflow">Cara Kerja</a>
-        <a href="#pricing">Lisensi</a>
-        <a href="#faq">FAQ</a>
-      </nav>
-
-      <a class="btn btn-small" href="#pricing">
-        Lihat Paket ↓
-      </a>
-
-    </div>
-  </header>
-
-
-  <!-- =======================================================
-       MAIN
-       ======================================================= -->
-
-  <main id="top">
-
-
-    <!-- =====================================================
-         HERO
-         ===================================================== -->
-
-    <section class="hero">
-
-      <div class="hero-glow glow-one"></div>
-      <div class="hero-glow glow-two"></div>
-
-      <div class="wrap hero-grid">
-
-        <div class="hero-copy">
-
-          <div class="eyebrow">
-            ⚡ AI CREATOR DESKTOP TOOL
-          </div>
-
-          <h1>
-            Generate Konten AI<br>
-            <span>Lebih Cepat & Maksimal.</span>
-          </h1>
-
-          <p class="lead">
-            BOT CREATOR UNLIMITED PRO X adalah aplikasi AI Image & Video Generator
-            untuk produksi konten dalam jumlah besar dengan <b>Multi Worker</b>,
-            <b>Multi Thread</b>, Bulk Prompt, kualitas gambar hingga <b>4K–5K</b>
-            dan video hingga <b>1080p Full HD</b>.
-          </p>
-
-          <div class="hero-points">
-            <span>⚡ Generate cepat dalam hitungan jam</span>
-            <span>🖼️ Image hingga 4K–5K</span>
-            <span>🎬 Video hingga 1080p</span>
-            <span>🚀 Multi Worker & Multi Thread</span>
-          </div>
-
-          <div class="hero-actions">
-            <a class="btn" href="#pricing">
-              🚀 Dapatkan Sekarang
-            </a>
-
-            <a class="btn btn-ghost" href="#demo">
-              Lihat Aplikasinya ↓
-            </a>
-          </div>
-
-          <div class="mini-note">
-            Windows Desktop • AI Image • AI Video • Bulk Prompt • Multi Worker
-          </div>
-
-        </div>
-
-
-        <div class="hero-card">
-
-          <div class="window-top">
-            <span></span>
-            <span></span>
-            <span></span>
-            <label>BOT CREATOR UNLIMITED PRO X</label>
-          </div>
-
-          <img
-            src="assets/TOLS MANTAP GENERATE 100.png"
-            alt="BOT CREATOR UNLIMITED PRO X"
-          >
-
-          <div class="hero-card-footer">
-            <div>
-              <b>4K–5K</b>
-              <small>Image</small>
-            </div>
-
-            <div>
-              <b>1080p</b>
-              <small>Video</small>
-            </div>
-
-            <div>
-              <b>Multi</b>
-              <small>Worker</small>
-            </div>
-
-            <div>
-              <b>Bulk</b>
-              <small>Prompt</small>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         STATS
-         ===================================================== -->
-
-    <section class="stats">
-
-      <div class="wrap stat-grid">
-
-        <div>
-          <strong>4K–5K</strong>
-          <span>Image Quality</span>
-        </div>
-
-        <div>
-          <strong>1080p</strong>
-          <span>Video Quality</span>
-        </div>
-
-        <div>
-          <strong>Multi Worker</strong>
-          <span>Parallel Processing</span>
-        </div>
-
-        <div>
-          <strong>Bulk Prompt</strong>
-          <span>Produksi Massal</span>
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         FEATURES
-         ===================================================== -->
-
-    <section id="features" class="section">
-
-      <div class="wrap">
-
-        <div class="section-head">
-
-          <div class="eyebrow">
-            ✦ FITUR LENGKAP
-          </div>
-
-          <h2>
-            Semua Kebutuhan AI Creator<br>
-            <span>Dalam Satu Aplikasi.</span>
-          </h2>
-
-          <p>
-            Satu workflow untuk membuat, memproses, dan mengelola konten AI
-            dengan lebih efisien.
-          </p>
-
-        </div>
-
-
-        <div class="feature-grid">
-
-          <article class="feature-card">
-            <div class="icon purple">▣</div>
-            <h3>Text → Image</h3>
-            <p>
-              Ubah prompt teks menjadi gambar AI berkualitas tinggi hingga 4K–5K.
-            </p>
-          </article>
-
-
-          <article class="feature-card">
-            <div class="icon pink">▶</div>
-            <h3>Text → Video</h3>
-            <p>
-              Buat video AI langsung dari prompt teks hingga 1080p Full HD.
-            </p>
-          </article>
-
-
-          <article class="feature-card">
-            <div class="icon blue">▧</div>
-            <h3>Image → Video</h3>
-            <p>
-              Ubah gambar menjadi video AI dengan gerakan yang hidup dan cinematic.
-            </p>
-          </article>
-
-
-          <article class="feature-card">
-            <div class="icon green">✎</div>
-            <h3>Image → Image</h3>
-            <p>
-              Edit, transformasi, redesign, dan modifikasi gambar menggunakan AI.
-            </p>
-          </article>
-
-
-          <article class="feature-card">
-            <div class="icon orange">⚡</div>
-            <h3>Multi Worker</h3>
-            <p>
-              Jalankan banyak pekerjaan secara bersamaan untuk workflow yang lebih cepat.
-            </p>
-          </article>
-
-
-          <article class="feature-card">
-            <div class="icon cyan">⌁</div>
-            <h3>Multi Thread</h3>
-            <p>
-              Optimalkan proses paralel untuk produksi konten dalam jumlah besar.
-            </p>
-          </article>
-
-
-          <article class="feature-card">
-            <div class="icon violet">▤</div>
-            <h3>Bulk Prompt</h3>
-            <p>
-              Import dan proses banyak prompt sekaligus tanpa harus menjalankan satu per satu.
-            </p>
-          </article>
-
-
-          <article class="feature-card">
-            <div class="icon yellow">◈</div>
-            <h3>History & Activity</h3>
-            <p>
-              Pantau proses, riwayat generate, dan hasil pekerjaan dari aplikasi.
-            </p>
-          </article>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         CAMERA
-         ===================================================== -->
-
-    <section id="camera" class="section dark-section">
-
-      <div class="wrap camera-grid">
-
-        <div>
-
-          <div class="eyebrow">
-            🎥 ADVANCED CAMERA MODE
-          </div>
-
-          <h2>
-            Static Saat Dibutuhkan.<br>
-            <span>Cinematic Saat Diinginkan.</span>
-          </h2>
-
-          <p>
-            Dilengkapi pilihan Camera Movement untuk workflow video yang lebih fleksibel.
-            Gunakan kamera stabil untuk scene yang membutuhkan konsistensi atau gunakan
-            pergerakan cinematic sesuai kebutuhan prompt.
-          </p>
-
-        </div>
-
-
-        <div class="camera-cards">
-
-          <article class="camera-card">
-
-            <div class="camera-badge">
-              🔒
-            </div>
-
-            <h3>
-              Static Camera
-            </h3>
-
-            <p>
-              Kamera dikunci pada satu posisi dengan framing stabil dan konsisten.
-            </p>
-
-            <ul>
-              <li>Fixed viewpoint</li>
-              <li>Stable framing</li>
-              <li>Cocok untuk landscape & product shot</li>
-            </ul>
-
-          </article>
-
-
-          <article class="camera-card featured">
-
-            <div class="camera-badge">
-              🎬
-            </div>
-
-            <h3>
-              Cinematic Movement
-            </h3>
-
-            <p>
-              Gunakan pergerakan kamera cinematic sesuai kebutuhan scene dan prompt.
-            </p>
-
-            <ul>
-              <li>Pan & Tilt</li>
-              <li>Dolly & Tracking</li>
-              <li>Orbit & cinematic movement</li>
-            </ul>
-
-          </article>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         DEMO
-         ===================================================== -->
-
-    <section id="demo" class="section">
-
-      <div class="wrap">
-
-        <div class="section-head">
-
-          <div class="eyebrow">
-            🖥️ TAMPILAN APLIKASI
-          </div>
-
-          <h2>
-            Lihat Workflow<br>
-            <span>BOT CREATOR PRO X.</span>
-          </h2>
-
-        </div>
-
-
-        <div class="screens">
-
-          <figure>
-
-            <img
-              src="assets/TOLS MANTAP GENERATE 100.png"
-              alt="BOT CREATOR UNLIMITED PRO X"
-            >
-
-            <figcaption>
-              BOT CREATOR UNLIMITED PRO X
-            </figcaption>
-
-          </figure>
-
-
-          <figure>
-
-            <img
-              src="assets/GAMBAR PROMOSI BOT CREATOR UNLIMITED PROX.png"
-              alt="GAMBAR PROMOSI BOT CREATOR UNLIMITED PRO X"
-            >
-
-            <figcaption>
-              BOT CREATOR UNLIMITED PRO X
-            </figcaption>
-
-          </figure>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         WORKFLOW
-         ===================================================== -->
-
-    <section id="workflow" class="section workflow-section">
-
-      <div class="wrap">
-
-        <div class="section-head">
-
-          <div class="eyebrow">
-            🚀 WORKFLOW SEDERHANA
-          </div>
-
-          <h2>
-            Prompt Masuk.<br>
-            <span>Konten Jadi.</span>
-          </h2>
-
-        </div>
-
-
-        <div class="steps">
-
-          <div class="step">
-            <b>01</b>
-            <h3>Masukkan Prompt</h3>
-            <p>
-              Tulis prompt atau import banyak prompt sekaligus.
-            </p>
-          </div>
-
-
-          <div class="step">
-            <b>02</b>
-            <h3>Pilih Mode</h3>
-            <p>
-              Text → Image, Text → Video, Image → Video,
-              atau Image → Image.
-            </p>
-          </div>
-
-
-          <div class="step">
-            <b>03</b>
-            <h3>Atur Output</h3>
-            <p>
-              Pilih kualitas, aspect ratio, camera mode,
-              engine, durasi, dan worker.
-            </p>
-          </div>
-
-
-          <div class="step">
-            <b>04</b>
-            <h3>Generate</h3>
-            <p>
-              Jalankan proses dan pantau hasilnya dari aplikasi.
-            </p>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         PRICING
-         ===================================================== -->
-
-    <section id="pricing" class="section pricing-section">
-
-      <div class="wrap">
-
-
-        <!-- =================================================
-             LARGE PROMO BANNER DI ATAS
-             ================================================= -->
-
-        <div class="promo-hero-banner">
-
-          <div class="promo-title">
-            🎁 <span class="gold">HARGA SPESIAL</span>
-            DENGAN KODE PROMO AFFILIATE!
-          </div>
-
-          <div class="promo-prices">
-            1 Bulan <span>Rp300.000</span>
-            &nbsp; • &nbsp;
-            3 Bulan <span>Rp500.000</span>
-            &nbsp; • &nbsp;
-            1 Tahun <span>Rp1.000.000</span>
-          </div>
-
-          <div class="promo-subtitle">
-            🔥 HEMAT HINGGA 70% — JANGAN LEWATKAN!
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             HEADING
-             ================================================= -->
-
-        <div class="section-head">
-
-          <div class="eyebrow">
-            🔐 PAKET LISENSI
-          </div>
-
-          <h2>
-            Pilih Paket<br>
-            <span>Sesuai Kebutuhanmu.</span>
-          </h2>
-
-          <p>
-            Dapatkan BOT CREATOR UNLIMITED PRO X
-            dengan harga promo khusus.
-          </p>
-
-        </div>
-
-
-        <!-- =================================================
-             PROMO CODE BOX
-             ================================================= -->
-
-        <div class="promo-box">
-
-          <div>
-
-            <strong>
-              🎁 Punya Kode Promo?
-            </strong>
-
-            <span>
-              Masukkan kode promo kamu di sini.
-            </span>
-
-          </div>
-
-
-          <div class="promo-form">
-
-            <input
-              id="promoInput"
-              type="text"
-              placeholder="Kode promo affiliate"
-              autocomplete="off"
-            >
-
-            <button
-              class="btn btn-small"
-              onclick="applyPromo()"
-            >
-              Gunakan
-            </button>
-
-          </div>
-
-
-          <div
-            id="promoMessage"
-            class="promo-message"
-          ></div>
-
-
-          <div
-            id="affiliateInfo"
-            class="affiliate-info"
-            hidden
-          ></div>
-
-        </div>
-
-
-        <!-- =================================================
-             PRICING GRID
-             ================================================= -->
-
-        <div class="pricing-grid">
-
-
-          <!-- ===============================================
-               1 BULAN
-               =============================================== -->
-
-          <article
-            class="price-card new-price-card"
-            data-plan="1 Bulan"
-            data-price="450000"
-            data-promo-price="300000"
-          >
-
-            <div class="discount-badge">
-              <small>DISKON</small>
-              <strong>30%</strong>
-            </div>
-
-
-            <div class="plan">
-              1 BULAN
-            </div>
-
-
-            <h3>
-              Starter
-            </h3>
-
-
-            <p class="plan-description">
-              Mulai berkarya dengan fitur lengkap
-            </p>
-
-
-            <div class="normal-price">
-              Rp450.000
-            </div>
-
-
-            <div class="price promo-current-price">
-
-              <span class="currency">
-                Rp
-              </span>
-
-              <span class="price-value">
-                300.000
-              </span>
-
-            </div>
-
-
-            <div class="saving-badge">
-              Hemat Rp150.000
-            </div>
-
-
-            <ul class="price-card-features">
-
-              <li>
-                ✓ Lisensi aktif 1 bulan
-              </li>
-
-              <li>
-                ✓ Semua fitur aplikasi
-              </li>
-
-              <li>
-                ✓ Text → Image
-              </li>
-
-              <li>
-                ✓ Text → Video
-              </li>
-
-              <li>
-                ✓ Image → Video
-              </li>
-
-              <li>
-                ✓ Image → Image
-              </li>
-
-              <li class="premium-feature">
-                ✓ 🖼️ Kualitas gambar 4K–5K
-              </li>
-
-              <li class="premium-feature">
-                ✓ 🎬 Video hingga 1080p Full HD
-              </li>
-
-              <li>
-                ✓ Multi Worker & Multi Thread
-              </li>
-
-            </ul>
-
-
-            <button
-              class="btn full"
-              onclick="choosePlan(this)"
-            >
-              Pilih Paket 1 Bulan →
-            </button>
-
-          </article>
-
-
-          <!-- ===============================================
-               3 BULAN
-               =============================================== -->
-
-          <article
-            class="price-card popular new-price-card"
-            data-plan="3 Bulan"
-            data-price="1000000"
-            data-promo-price="500000"
-          >
-
-            <div class="recommend-badge">
-              👑 REKOMENDASI
-            </div>
-
-
-            <div class="discount-badge">
-              <small>DISKON</small>
-              <strong>50%</strong>
-            </div>
-
-
-            <div class="plan">
-              3 BULAN
-            </div>
-
-
-            <h3>
-              Creator
-            </h3>
-
-
-            <p class="plan-description">
-              Pilihan terbaik untuk para creator
-            </p>
-
-
-            <div class="normal-price">
-              Rp1.000.000
-            </div>
-
-
-            <div class="price promo-current-price">
-
-              <span class="currency">
-                Rp
-              </span>
-
-              <span class="price-value">
-                500.000
-              </span>
-
-            </div>
-
-
-            <div class="saving-badge">
-              Hemat Rp500.000
-            </div>
-
-
-            <ul class="price-card-features">
-
-              <li>
-                ✓ Lisensi aktif 3 bulan
-              </li>
-
-              <li>
-                ✓ Semua fitur aplikasi
-              </li>
-
-              <li class="premium-feature">
-                ✓ 🖼️ Kualitas gambar 4K–5K
-              </li>
-
-              <li class="premium-feature">
-                ✓ 🎬 Video hingga 1080p Full HD
-              </li>
-
-              <li>
-                ✓ Text → Image
-              </li>
-
-              <li>
-                ✓ Text → Video
-              </li>
-
-              <li>
-                ✓ Image → Video
-              </li>
-
-              <li>
-                ✓ Image → Image
-              </li>
-
-              <li>
-                ✓ Static Camera
-              </li>
-
-              <li>
-                ✓ Cinematic Movement
-              </li>
-
-              <li>
-                ✓ Multi Worker & Multi Thread
-              </li>
-
-            </ul>
-
-
-            <button
-              class="btn full"
-              onclick="choosePlan(this)"
-            >
-              Pilih Paket 3 Bulan →
-            </button>
-
-          </article>
-
-
-          <!-- ===============================================
-               1 TAHUN
-               =============================================== -->
-
-          <article
-            class="price-card new-price-card"
-            data-plan="1 Tahun"
-            data-price="3600000"
-            data-promo-price="1000000"
-          >
-
-            <div class="discount-badge">
-              <small>DISKON</small>
-              <strong>70%</strong>
-            </div>
-
-
-            <div class="plan">
-              1 TAHUN
-            </div>
-
-
-            <h3>
-              Pro
-            </h3>
-
-
-            <p class="plan-description">
-              Solusi lengkap untuk hasil maksimal
-            </p>
-
-
-            <div class="normal-price">
-              Rp3.600.000
-            </div>
-
-
-            <div class="price promo-current-price">
-
-              <span class="currency">
-                Rp
-              </span>
-
-              <span class="price-value">
-                1.000.000
-              </span>
-
-            </div>
-
-
-            <div class="saving-badge">
-              Hemat Rp2.600.000
-            </div>
-
-
-            <ul class="price-card-features">
-
-              <li>
-                ✓ Lisensi aktif 1 tahun
-              </li>
-
-              <li>
-                ✓ Semua fitur aplikasi
-              </li>
-
-              <li class="premium-feature">
-                ✓ 🖼️ Kualitas gambar 4K–5K
-              </li>
-
-              <li class="premium-feature">
-                ✓ 🎬 Video hingga 1080p Full HD
-              </li>
-
-              <li>
-                ✓ Text → Image
-              </li>
-
-              <li>
-                ✓ Text → Video
-              </li>
-
-              <li>
-                ✓ Image → Video
-              </li>
-
-              <li>
-                ✓ Image → Image
-              </li>
-
-              <li>
-                ✓ Static + Cinematic Movement
-              </li>
-
-              <li>
-                ✓ Bulk Prompt
-              </li>
-
-              <li>
-                ✓ Multi Worker & Multi Thread
-              </li>
-
-            </ul>
-
-
-            <button
-              class="btn full"
-              onclick="choosePlan(this)"
-            >
-              Pilih Paket 1 Tahun →
-            </button>
-
-          </article>
-
-
-        </div>
-
-
-        <!-- =================================================
-             LARGE TEXT DI BAWAH KARTU
-             ================================================= -->
-
-        <div class="large-promo-note">
-
-          <div class="main-note">
-            🔥 PROMO HARGA KHUSUS UNTUK WAKTU TERBATAS!
-          </div>
-
-          <div class="price-line">
-            Rp300.000
-            &nbsp; • &nbsp;
-            Rp500.000
-            &nbsp; • &nbsp;
-            Rp1.000.000
-          </div>
-
-          <div class="small-note">
-            1 Bulan • 3 Bulan • 1 Tahun
-            &nbsp; | &nbsp;
-            Gunakan kode promo affiliate saat pembelian.
-          </div>
-
-        </div>
-
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         FAQ
-         ===================================================== -->
-
-    <section id="faq" class="section">
-
-      <div class="wrap faq-wrap">
-
-        <div class="section-head">
-
-          <div class="eyebrow">
-            ❓ FAQ
-          </div>
-
-          <h2>
-            Pertanyaan<br>
-            <span>Yang Sering Ditanyakan.</span>
-          </h2>
-
-        </div>
-
-
-        <div class="faq">
-
-          <details open>
-
-            <summary>
-              Apakah ini aplikasi desktop?
-            </summary>
-
-            <p>
-              Ya. BOT CREATOR UNLIMITED PRO X adalah aplikasi desktop Windows.
-            </p>
-
-          </details>
-
-
-          <details>
-
-            <summary>
-              Mode AI apa saja yang tersedia?
-            </summary>
-
-            <p>
-              Text → Image, Text → Video, Image → Video,
-              dan Image → Image.
-            </p>
-
-          </details>
-
-
-          <details>
-
-            <summary>
-              Apakah tersedia Static Camera?
-            </summary>
-
-            <p>
-              Ya. Tersedia Static Camera dan Cinematic Movement
-              untuk workflow video.
-            </p>
-
-          </details>
-
-
-          <details>
-
-            <summary>
-              Apakah mendukung banyak prompt?
-            </summary>
-
-            <p>
-              Ya. Aplikasi menyediakan Bulk Prompt serta sistem
-              Multi Worker dan Multi Thread.
-            </p>
-
-          </details>
-
-
-          <details>
-
-            <summary>
-              Bagaimana cara mendapatkan lisensi?
-            </summary>
-
-            <p>
-              Pilih paket di halaman ini, lalu lanjutkan ke kontak/admin pembayaran.
-              Setelah pembayaran, lisensi dapat diberikan sesuai paket yang dipilih.
-            </p>
-
-          </details>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         CTA
-         ===================================================== -->
-
-    <section class="cta">
-
-      <div class="wrap cta-box">
-
-        <div>
-
-          <div class="eyebrow">
-            🔥 BOT CREATOR UNLIMITED PRO X
-          </div>
-
-          <h2>
-            Siap Mempercepat Produksi Konten AI?
-          </h2>
-
-          <p>
-            Gunakan satu aplikasi untuk image, video, bulk prompt,
-            multi worker, dan workflow cinematic.
-          </p>
-
-        </div>
-
-
-        <a class="btn" href="#pricing">
-          🚀 Pilih Paket Lisensi
-        </a>
-
-      </div>
-
-    </section>
-
-
-  </main>
-
-
-  <!-- =======================================================
-       FOOTER
-       ======================================================= -->
-
-  <footer>
-
-    <div class="wrap footer-inner">
-
-      <span>
-        © 2026 BOT CREATOR UNLIMITED PRO X. All Rights Reserved.
-      </span>
-
-      <span>
-        AI Image • AI Video • 4K–5K • 1080p • Multi Worker
-      </span>
-
-    </div>
-
-  </footer>
-
-
-  <!-- =======================================================
-       JAVASCRIPT
-       ======================================================= -->
-
-  <script src="script.js"></script>
-
-</body>
-</html>
+✦ BOT CREATOR UNLIMITED PRO X
+Fitur Camera Cara Kerja Lisensi FAQ
+Lihat Paket ↓
+⚡ AI CREATOR DESKTOP TOOL
+Generate Konten AI
+Lebih Cepat & Maksimal.
+BOT CREATOR UNLIMITED PRO X adalah aplikasi AI Image & Video Generator untuk produksi konten dalam jumlah besar dengan Multi Worker, Multi Thread, Bulk Prompt, kualitas gambar hingga 4K–5K dan video hingga 1080p Full HD.
+
+⚡ Generate cepat dalam hitungan jam 🖼️ Image hingga 4K–5K 🎬 Video hingga 1080p 🚀 Multi Worker & Multi Thread
+🚀 Dapatkan Sekarang Lihat Aplikasinya ↓
+Windows Desktop • AI Image • AI Video • Bulk Prompt • Multi Worker
+BOT CREATOR UNLIMITED PRO X
+BOT CREATOR UNLIMITED PRO X
+4K–5K Image
+1080p Video
+Multi Worker
+Bulk Prompt
+4K–5K Image Quality
+1080p Video Quality
+Multi Worker Parallel Processing
+Bulk Prompt Produksi Massal
+✦ FITUR LENGKAP
+Semua Kebutuhan AI Creator
+Dalam Satu Aplikasi.
+Satu workflow untuk membuat, memproses, dan mengelola konten AI dengan lebih efisien.
+
+▣
+Text → Image
+Ubah prompt teks menjadi gambar AI berkualitas tinggi hingga 4K–5K.
+
+▶
+Text → Video
+Buat video AI langsung dari prompt teks hingga 1080p Full HD.
+
+▧
+Image → Video
+Ubah gambar menjadi video AI dengan gerakan yang hidup dan cinematic.
+
+✎
+Image → Image
+Edit, transformasi, redesign, dan modifikasi gambar menggunakan AI.
+
+⚡
+Multi Worker
+Jalankan banyak pekerjaan secara bersamaan untuk workflow yang lebih cepat.
+
+⌁
+Multi Thread
+Optimalkan proses paralel untuk produksi konten dalam jumlah besar.
+
+▤
+Bulk Prompt
+Import dan proses banyak prompt sekaligus tanpa harus menjalankan satu per satu.
+
+◈
+History & Activity
+Pantau proses, riwayat generate, dan hasil pekerjaan dari aplikasi.
+
+🎥 ADVANCED CAMERA MODE
+Static Saat Dibutuhkan.
+Cinematic Saat Diinginkan.
+Dilengkapi pilihan Camera Movement untuk workflow video yang lebih fleksibel. Gunakan kamera stabil untuk scene yang membutuhkan konsistensi atau gunakan pergerakan cinematic sesuai kebutuhan prompt.
+
+🔒
+Static Camera
+Kamera dikunci pada satu posisi dengan framing stabil dan konsisten.
+
+Fixed viewpoint
+Stable framing
+Cocok untuk landscape & product shot
+🎬
+Cinematic Movement
+Gunakan pergerakan kamera cinematic sesuai kebutuhan scene dan prompt.
+
+Pan & Tilt
+Dolly & Tracking
+Orbit & cinematic movement
+🖥️ TAMPILAN APLIKASI
+Lihat Workflow
+BOT CREATOR PRO X.
+BOT CREATOR UNLIMITED PRO X
+BOT CREATOR UNLIMITED PRO X
+GAMBAR PROMOSI BOT CREATOR UNLIMITED PRO X
+BOT CREATOR UNLIMITED PRO X
+🚀 WORKFLOW SEDERHANA
+Prompt Masuk.
+Konten Jadi.
+01
+Masukkan Prompt
+Tulis prompt atau import banyak prompt sekaligus.
+
+02
+Pilih Mode
+Text → Image, Text → Video, Image → Video, atau Image → Image.
+
+03
+Atur Output
+Pilih kualitas, aspect ratio, camera mode, engine, durasi, dan worker.
+
+04
+Generate
+Jalankan proses dan pantau hasilnya dari aplikasi.
+
+🎁 HARGA SPESIAL DENGAN KODE PROMO AFFILIATE!
+1 Bulan Rp300.000   •   3 Bulan Rp500.000   •   1 Tahun Rp1.000.000
+🔥 HEMAT HINGGA 70% — JANGAN LEWATKAN!
+🔐 PAKET LISENSI
+Pilih Paket
+Sesuai Kebutuhanmu.
+Dapatkan BOT CREATOR UNLIMITED PRO X dengan harga promo khusus.
+
+🎁 Punya Kode Promo? Masukkan kode promo kamu di sini.
+Kode promo affiliate
+ Gunakan
+🤝 AFFILIATE CENTER
+Buat Link Affiliate
+Buat kode unik untuk setiap reseller / affiliate. Link akan otomatis mengaktifkan harga promo.
+
+Nama Affiliate
+Contoh: Budi Gaming
+Kode Affiliate
+Otomatis dibuat
+🚀 BUAT LINK AFFILIATE
+DISKON
+30%
+1 BULAN
+Starter
+Mulai berkarya dengan fitur lengkap
+
+Rp450.000
+Rp 300.000
+Hemat Rp150.000
+✓ Lisensi aktif 1 bulan
+✓ Semua fitur aplikasi
+✓ Text → Image
+✓ Text → Video
+✓ Image → Video
+✓ Image → Image
+✓ 🖼️ Kualitas gambar 4K–5K
+✓ 🎬 Video hingga 1080p Full HD
+✓ Multi Worker & Multi Thread
+Pilih Paket 1 Bulan →
+👑 REKOMENDASI
+DISKON
+50%
+3 BULAN
+Creator
+Pilihan terbaik untuk para creator
+
+Rp1.000.000
+Rp 500.000
+Hemat Rp500.000
+✓ Lisensi aktif 3 bulan
+✓ Semua fitur aplikasi
+✓ 🖼️ Kualitas gambar 4K–5K
+✓ 🎬 Video hingga 1080p Full HD
+✓ Text → Image
+✓ Text → Video
+✓ Image → Video
+✓ Image → Image
+✓ Static Camera
+✓ Cinematic Movement
+✓ Multi Worker & Multi Thread
+Pilih Paket 3 Bulan →
+DISKON
+70%
+1 TAHUN
+Pro
+Solusi lengkap untuk hasil maksimal
+
+Rp3.600.000
+Rp 1.000.000
+Hemat Rp2.600.000
+✓ Lisensi aktif 1 tahun
+✓ Semua fitur aplikasi
+✓ 🖼️ Kualitas gambar 4K–5K
+✓ 🎬 Video hingga 1080p Full HD
+✓ Text → Image
+✓ Text → Video
+✓ Image → Video
+✓ Image → Image
+✓ Static + Cinematic Movement
+✓ Bulk Prompt
+✓ Multi Worker & Multi Thread
+Pilih Paket 1 Tahun →
+🔥 PROMO HARGA KHUSUS UNTUK WAKTU TERBATAS!
+Rp300.000   •   Rp500.000   •   Rp1.000.000
+1 Bulan • 3 Bulan • 1 Tahun   |   Gunakan kode promo affiliate saat pembelian.
+❓ FAQ
+Pertanyaan
+Yang Sering Ditanyakan.
+Apakah ini aplikasi desktop?
+Ya. BOT CREATOR UNLIMITED PRO X adalah aplikasi desktop Windows.
+
+Mode AI apa saja yang tersedia?
+Apakah tersedia Static Camera?
+Apakah mendukung banyak prompt?
+Bagaimana cara mendapatkan lisensi?
+🔥 BOT CREATOR UNLIMITED PRO X
+Siap Mempercepat Produksi Konten AI?
+Gunakan satu aplikasi untuk image, video, bulk prompt, multi worker, dan workflow cinematic.
+
+🚀 Pilih Paket Lisensi
+© 2026 BOT CREATOR UNLIMITED PRO X. All Rights Reserved. AI Image • AI Video • 4K–5K • 1080p • Multi Worker
